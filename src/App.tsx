@@ -23,29 +23,22 @@ const footerStyle: React.CSSProperties = {
   textAlign: 'center',
 };
 
-const layoutStyle = {
-  borderRadius: 8,
-  overflow: 'hidden',
-  width: 'calc(50% - 8px)',
-  maxWidth: 'calc(50% - 8px)',
-};
-
 function App() {
   return (
-    <Layout style={layoutStyle}>
+    <Layout className="mainLayout">
       <Header style={headerStyle}>
         <Title level={2}>💸 iGastos</Title>
         <Text type="secondary">¡Ay gastos, ya los vi venir!</Text>
       </Header>
       <Content style={contentStyle}>
-        <Card>
-          <Upload beforeUpload={() => false} maxCount={1}>
-            <Button icon={<UploadOutlined />}>Subir archivo PDF</Button>
-          </Upload>
-        </Card>
-
-        {/* Resultados simulados */}
-        <Row gutter={16} style={{ marginTop: 32 }}>
+        <Row gutter={[16, 24]}>
+          <Col span={24}>
+            <Card>
+              <Upload beforeUpload={() => false} maxCount={1}>
+                <Button icon={<UploadOutlined />}>Subir archivo PDF</Button>
+              </Upload>
+            </Card>
+          </Col>
           <Col span={12}>
             <Card title="💰 Gasto hormiga">
               <p>Café: $30</p>
@@ -60,9 +53,7 @@ function App() {
         </Row>
       </Content>
       <Footer style={footerStyle}>
-        <div style={{ marginTop: 32, textAlign: 'center' }}>
-          <Button type="primary">Analizar otro PDF</Button>
-        </div>
+        <Button type="primary">Analizar otro PDF</Button>
       </Footer>
     </Layout>
   );
