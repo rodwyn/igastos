@@ -1,12 +1,16 @@
 // vendor
-import { Button, Card, Col, Layout, Row, Typography, Upload } from 'antd';
+import { Button, Card, Col, Layout, message, Row, Typography, Upload } from 'antd';
+
+// lib
+import { extractTextFromPDF } from './lib/pdfParser';
 
 // styles
 import './App.css';
 import { UploadOutlined } from '@ant-design/icons';
+import { useState } from 'react';
 
 const { Header, Footer, Content } = Layout;
-const { Title, Text } = Typography;
+const { Paragraph, Title, Text } = Typography;
 
 const headerStyle: React.CSSProperties = {
   backgroundColor: '#f5f5f5',
@@ -24,6 +28,22 @@ const footerStyle: React.CSSProperties = {
 };
 
 function App() {
+  const [pdfText, setPdfText] = useState('');
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const handleUpload = async (file: File) => {
+    try {
+      const text = await extractTextFromPDF(file);
+      console.log('🚀 ~ handleUpload ~ text:', text);
+      setPdfText(text);
+      messageApi.success('PDF cargado y leído con éxito');
+    } catch (err) {
+      messageApi.error('Error al procesar el PDF');
+    }
+
+    return false; // evita carga automática
+  };
+
   return (
     <Layout className="mainLayout">
       <Header style={headerStyle}>
@@ -34,11 +54,18 @@ function App() {
         <Row gutter={[16, 24]}>
           <Col span={24}>
             <Card>
-              <Upload beforeUpload={() => false} maxCount={1}>
+              <Upload beforeUpload={handleUpload} maxCount={1}>
                 <Button icon={<UploadOutlined />}>Subir archivo PDF</Button>
               </Upload>
             </Card>
           </Col>
+          {contextHolder}
+          {pdfText && (
+            <Card title="📄 Texto extraído del PDF">
+              <Paragraph style={{ whiteSpace: 'pre-wrap' }}>{pdfText}</Paragraph>
+            </Card>
+          )}
+          <Col span={24}></Col>
           <Col span={12}>
             <Card title="💰 Gasto hormiga">
               <p>Café: $30</p>
